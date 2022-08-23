@@ -4,6 +4,7 @@ var date = document.getElementById("date");
 var temperature = document.getElementById("temperature");
 var humidity = document.getElementById("humidity");
 var wind = document.getElementById("wind");
+var uvIndex = document.getElementById("uv-index");
 var icon = document.getElementById("icon");
 
 
@@ -11,8 +12,11 @@ var icon = document.getElementById("icon");
 
 searchCityBtn.addEventListener('click', function(event){
     event.preventDefault()
-var weatherURL = "https://api.openweathermap.org/data/2.5/forecast?q=" + document.getElementById("city").value.split(' ').join('+') + "&appid=1caf07bdfd403b26e4f9cc78d0d4e92b&cnt=5"
+    
+var weatherURL = "https://api.openweathermap.org/data/2.5/forecast?q=" + document.getElementById("city").value.split(' ').join('+') + "&units=imperial&appid=1caf07bdfd403b26e4f9cc78d0d4e92b&cnt=40"
 console.log(weatherURL);
+var testUrl = "https://api.openweathermap.org/data/3.0/onecall?lat=33.44&lon=-94.04&exclude=hourly,daily&appid=1caf07bdfd403b26e4f9cc78d0d4e92b";
+console.log(testUrl);
 
 
 fetch(weatherURL)
@@ -29,7 +33,8 @@ fetch(weatherURL)
         var localTime = todayDate.getTime();
         var localOffset = todayDate.getTimezoneOffset() * 60000;
         var utc = localOffset + localTime;
-        var cityTime = utc + (1000 * data.city.timezone);
+        var timeZone = data.city.timezone;
+        var cityTime = utc + (1000 * timeZone);
         var displayTime = new Date(cityTime);
         //display date and time
         document.getElementById("time").textContent = displayTime;
@@ -39,12 +44,14 @@ fetch(weatherURL)
         var iconCode = data.list[0].weather[0].icon;
         icon.src = "http://openweathermap.org/img/wn/" + iconCode + "@2x.png";
         //display temp in fahrenheit
-        temperature.textContent = "Temperature: " + Math.trunc(1.8 * (data.list[0].main.temp - 273) + 32) + "° F";
+        temperature.textContent = "Temperature: " + data.list[0].main.temp + "° F";
         //display percent humidity
         humidity.textContent = "Humidity: " + data.list[0].main.humidity + "%";
         //display wind speed
         wind.textContent = "Wind Speed: " + data.list[0].wind.speed;
-        
+        //display uv index
+        uvIndex.textContent = "UV Index: " + data.list[0].uvi;
+
         //day 2 of 5 day forecast info
         var dayTwoDate = document.getElementById("date2");
         var loTemp = document.getElementById("lo-temp");
@@ -53,17 +60,22 @@ fetch(weatherURL)
         var wind2 = document.getElementById("wind2");
         var icon2 = document.getElementById("icon2");
         //weather icon
-        var iconCode2 = data.list[1].weather[0].icon;
+        var iconCode2 = data.list[8].weather[0].icon;
         icon2.src = "http://openweathermap.org/img/wn/" + iconCode2 + "@2x.png";
         //date
-        dayTwoDate.textContent = data.list[1].dt_txt;
+        
+        var date2 = new Date((data.list[8].dt + timeZone) * 1000);
+        var month2 = date2.getMonth() + 1;
+        var time2 = date2.getDate();
+        var year2 = date2.getFullYear();
+        dayTwoDate.textContent = month2 + "/" + time2 + "/" + year2;
         //display temp in fahrenheit
-        loTemp.textContent = "Low: " + Math.trunc(1.8 * (data.list[1].main.temp_min - 273) + 32) + "° F - ";
-        hiTemp.textContent = "High: " + Math.trunc(1.8 * (data.list[1].main.temp_max - 273) + 32) + "° F";
+        loTemp.textContent = "Temperature: " + data.list[8].main.temp + "° F";
+        
         //display percent humidity
-        humidity2.textContent = "Humidity: " + data.list[1].main.humidity + "%";
+        humidity2.textContent = "Humidity: " + data.list[8].main.humidity + "%";
         //display wind speed
-        wind2.textContent = "Wind Speed: " + data.list[1].wind.speed;
+        wind2.textContent = "Wind Speed: " + data.list[8].wind.speed;
 
         //day 3 of 5 day forecast info
 
@@ -74,17 +86,23 @@ fetch(weatherURL)
         var wind3 = document.getElementById("wind3");
         var icon3 = document.getElementById("icon3");
         //weather icon
-        var iconCode3 = data.list[2].weather[0].icon;
+        var iconCode3 = data.list[16].weather[0].icon;
         icon3.src = "http://openweathermap.org/img/wn/" + iconCode3 + "@2x.png";
 
-        dayThreeDate.textContent = data.list[2].dt_txt;
+        //date
+        var date3 = new Date(data.list[16].dt * 1000);
+        var month3 = date3.getMonth() + 1;
+        var time3 = date3.getDate();
+        var year3 = date3.getFullYear();
+        dayThreeDate.textContent = month3 + "/" + time3 + "/" + year3;
+
         //display temp in fahrenheit
-        loTemp3.textContent = "Low: " + Math.trunc(1.8 * (data.list[2].main.temp_min - 273) + 32) + "° F - ";
-        hiTemp3.textContent = "High: " + Math.trunc(1.8 * (data.list[2].main.temp_max - 273) + 32) + "° F";
+        loTemp3.textContent = "Temperature: " + data.list[16].main.temp + "° F";
+        
         //display percent humidity
-        humidity3.textContent = "Humidity: " + data.list[2].main.humidity + "%";
+        humidity3.textContent = "Humidity: " + data.list[16].main.humidity + "%";
         //display wind speed
-        wind3.textContent = "Wind Speed: " + data.list[2].wind.speed;
+        wind3.textContent = "Wind Speed: " + data.list[16].wind.speed;
 
         //day 4 of 5 day forecast info
 
@@ -95,17 +113,24 @@ fetch(weatherURL)
         var wind4 = document.getElementById("wind4");
         var icon4 = document.getElementById("icon4");
         //weather icon
-        var iconCode4 = data.list[3].weather[0].icon;
+        var iconCode4 = data.list[24].weather[0].icon;
         icon4.src = "http://openweathermap.org/img/wn/" + iconCode4 + "@2x.png";
 
-        dayFourDate.textContent = data.list[3].dt_txt;
+        //date
+        var date4 = new Date(data.list[24].dt * 1000);
+        var month4 = date4.getMonth() + 1;
+        var time4 = date4.getDate();
+        var year4 = date4.getFullYear();
+        dayFourDate.textContent = month4 + "/" + time4 + "/" + year4;
+
+        
         //display temp in fahrenheit
-        loTemp4.textContent = "Low: " + Math.trunc(1.8 * (data.list[3].main.temp_min - 273) + 32) + "° F - ";
-        hiTemp4.textContent = "High: " + Math.trunc(1.8 * (data.list[3].main.temp_max - 273) + 32) + "° F";
+        loTemp4.textContent = "Temperature: " + data.list[24].main.temp + "° F";
+        
         //display percent humidity
-        humidity4.textContent = "Humidity: " + data.list[3].main.humidity + "%";
+        humidity4.textContent = "Humidity: " + data.list[24].main.humidity + "%";
         //display wind speed
-        wind4.textContent = "Wind Speed: " + data.list[3].wind.speed;
+        wind4.textContent = "Wind Speed: " + data.list[24].wind.speed;
 
         //day 5 of 5 day forecast
 
@@ -116,17 +141,21 @@ fetch(weatherURL)
         var wind5 = document.getElementById("wind5");
         var icon5 = document.getElementById("icon5");
         //weather icon
-        var iconCode5 = data.list[3].weather[0].icon;
+        var iconCode5 = data.list[32].weather[0].icon;
         icon5.src = "http://openweathermap.org/img/wn/" + iconCode5 + "@2x.png";
 
-        dayFiveDate.textContent = data.list[3].dt_txt;
+        //date
+        var date5 = new Date(data.list[32].dt * 1000);
+        var month5 = date5.getMonth() + 1;
+        var time5 = date5.getDate();
+        var year5 = date5.getFullYear();
+        dayFiveDate.textContent = month5 + "/" + time5 + "/" + year5;
         //display temp in fahrenheit
-        loTemp5.textContent = "Low: " + Math.trunc(1.8 * (data.list[4].main.temp_min - 273) + 32) + "° F - ";
-        hiTemp5.textContent = "High: " + Math.trunc(1.8 * (data.list[4].main.temp_max - 273) + 32) + "° F";
+        loTemp5.textContent = "Low: " + data.list[32].main.temp + "° F";
         //display percent humidity
-        humidity5.textContent = "Humidity: " + data.list[4].main.humidity + "%";
+        humidity5.textContent = "Humidity: " + data.list[32].main.humidity + "%";
         //display wind speed
-        wind5.textContent = "Wind Speed: " + data.list[4].wind.speed;
+        wind5.textContent = "Wind Speed: " + data.list[32].wind.speed;
 
 
       //Loop over the data to generate a table, each table row will have a link to the repo url
