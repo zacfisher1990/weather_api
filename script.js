@@ -15,10 +15,25 @@ searchCityBtn.addEventListener('click', function(event){
     
 var weatherURL = "https://api.openweathermap.org/data/2.5/forecast?q=" + document.getElementById("city").value.split(' ').join('+') + "&units=imperial&appid=1caf07bdfd403b26e4f9cc78d0d4e92b&cnt=40"
 console.log(weatherURL);
-var testUrl = "https://api.openweathermap.org/data/3.0/onecall?lat=33.44&lon=-94.04&exclude=hourly,daily&appid=1caf07bdfd403b26e4f9cc78d0d4e92b";
-console.log(testUrl);
+//call function to show weather forecast
+fetchData();
 
+//create buttons for search history
+var searchHistory = document.getElementById("city").value;
+var button = document.createElement("button");
+var node = document.createTextNode(searchHistory);
+button.appendChild(node);
+var element = document.getElementById("buttons");
+element.appendChild(button);
 
+//when search history button is clicked
+button.addEventListener('click', function(event){
+  event.preventDefault();
+  //call function to show weather forecast
+  fetchData();
+})
+
+function fetchData() {
 fetch(weatherURL)
     .then(function (response) {
       return response.json();
@@ -26,6 +41,11 @@ fetch(weatherURL)
     .then(function (data) {
       console.log(data);
       
+      if (data.cod == "404") {
+        document.getElementById("error").textContent = "City not found";
+      } else if (data.cod == "200") {
+        document.getElementById("error").textContent = "";
+      }
       //city name
         city.textContent = data.city.name;
         //variables for local date and time
@@ -162,5 +182,7 @@ fetch(weatherURL)
       for (var i = 0; i < data.length; i++) {
         
     }
+  
 })
-});
+}})
+
