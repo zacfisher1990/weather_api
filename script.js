@@ -171,17 +171,14 @@ fetch(weatherURL)
         var year5 = date5.getFullYear();
         dayFiveDate.textContent = month5 + "/" + time5 + "/" + year5;
         //display temp in fahrenheit
-        loTemp5.textContent = "Low: " + data.list[32].main.temp + "° F";
+        loTemp5.textContent = "Temperature: " + data.list[32].main.temp + "° F";
         //display percent humidity
         humidity5.textContent = "Humidity: " + data.list[32].main.humidity + "%";
         //display wind speed
         wind5.textContent = "Wind Speed: " + data.list[32].wind.speed;
 
 
-      //Loop over the data to generate a table, each table row will have a link to the repo url
-      for (var i = 0; i < data.length; i++) {
-        
-    }
+      
   
 })
 }})
